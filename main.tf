@@ -31,7 +31,7 @@ resource "terraform_data" "ssh" {
 
   provisioner "file" {
     source      = local.config_path
-    destination = "${var.base_workspace_path}/config/ceph_config.yml"
+    destination = "${var.base_workspace_path}/storage-dev/config/ceph_config.yml"
   }
   provisioner "remote-exec" {
     inline = var.platform == "FiXo" || var.platform == "Storage" ? local.cmds-fixo: var.default_cmds
@@ -41,3 +41,4 @@ resource "terraform_data" "ssh" {
 output "instance1" {
     value = terraform_data.replacement.id
 }
+
