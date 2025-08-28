@@ -1,10 +1,18 @@
 locals {
-  config_path = "${path.root}/srcs/config/ceph_config_${var.platform}.yml"
+  config_path = "${path.root}/srcs/config/ceph_config_${lower(var.platform)}.yml"
   cmds-prepare = var.prepare_cmds
   cmds-fixo = var.shell_cmds
 }
 
+resource "terraform_data" "replacement" {
+  input = var.revision
+}
+
 resource "terraform_data" "ssh" {
+  lifecycle {
+    replace_triggered_by = [terraform_data.replacement]
+  }
+
   connection {
     type     = var.conn_type
     user     = var.conn_user
@@ -26,6 +34,10 @@ resource "terraform_data" "ssh" {
     destination = "${var.base_workspace_path}/config/ceph_config.yml"
   }
   provisioner "remote-exec" {
-    inline = var.platform == "fixo" || var.platform == "fixo2" ? local.cmds-fixo: var.default_cmds
+    inline = var.platform == "FiXo" || var.platform == "Storage" ? local.cmds-fixo: var.default_cmds
   }
+}
+
+output "instance1" {
+    value = terraform_data.replacement.id
 }
