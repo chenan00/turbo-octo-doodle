@@ -1,9 +1,3 @@
-variable "base_workspace_path" {
-    type        = string
-    description = "Base workspace path"
-    default     = "/home/henry/"
-}
-
 variable "conn_type" {
     type        = string
     description = "connection type"
@@ -24,10 +18,21 @@ variable "conn_private_key" {
     sensitive   = true
 }
 
+variable "base_workspace_path" {
+    type        = string
+    description = "Base workspace path"
+}
+
 variable "platform" {
     type        = string
-    default     = "fixo"
+    default     = "FiXo"
     description = "Platform type"
+    validation {
+        condition = (
+            var.platform == "FiXo" || var.platform == "Storage"
+        )
+        error_message = "許可されていないプラットフォームタイプが指定されています。"
+    }
 }
 
 variable "default_cmds" {
@@ -40,13 +45,14 @@ variable "default_cmds" {
 
 variable "prepare_cmds" {
     type = list(string)
-    default = [
-      "rm -rf /home/henry/storage-dev",
-    ]
     description = "preparation commands"
 }
 
 variable "shell_cmds" {
-  description = "shell commands to execute"
-  type        = list(string)
+    type        = list(string)
+    description = "shell commands to execute"
+}
+
+variable "revision" {
+    type = string
 }
