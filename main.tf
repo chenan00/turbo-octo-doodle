@@ -1,10 +1,11 @@
-resource "terraform_data" "replacement" {
+resource "terraform_data" "revision" {
   input = var.revision
 }
 
 resource "terraform_data" "ssh" {
   lifecycle {
-    replace_triggered_by = [terraform_data.replacement]
+    create_before_destroy = true
+    replace_triggered_by = [terraform_data.revision]
   }
 
   connection {
@@ -32,6 +33,10 @@ resource "terraform_data" "ssh" {
   }
 }
 
-output "instance1" {
-    value = terraform_data.replacement.id
+output "revision-id" {
+    value = terraform_data.revision
+}
+
+output "id" {
+    value = terraform_data.ssh.id
 }
